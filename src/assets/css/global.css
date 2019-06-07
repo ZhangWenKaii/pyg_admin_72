@@ -1,0 +1,21 @@
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/*给左侧导航菜单设置字号大小*/
+.el-submenu__title,
+.el-menu-item {
+  font-size: 13px;
+}
+/*一级菜单图标右边距*/
+i.iconfont {
+  margin-right: 14px;
+}
+/*二级菜单图标右边距*/
+.el-menu li i.el-icon-menu {
+  margin-right: 10px;
+}
