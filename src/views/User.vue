@@ -20,7 +20,7 @@
           </el-input>
         </el-col>
         <el-col :span="18">
-          <el-button type="primary" @click="addDialogFormVisible = true"
+          <el-button type="primary" @click="openAddDialog()"
             >添加用户</el-button
           >
         </el-col>
@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import { setTimeout } from "timers";
 export default {
   created() {
     this.getData();
@@ -167,7 +168,7 @@ export default {
       this.getData();
     },
     addUser() {
-      //添加用户
+      // 添加用户
       // 调用  表单组件的函数  函数是挂载在dom元素上的
       this.$refs.addForm.validate(async valid => {
         if (valid) {
@@ -183,6 +184,25 @@ export default {
           this.reqParams.pagenum = 1;
           this.getData();
         }
+      });
+    },
+    openAddDialog() {
+      // 显示对话框
+      this.addDialogFormVisible = true;
+      // 重置添加表单
+      // "TypeError: Cannot read property 'resetFields' of undefined"
+      // addForm 是 undefined 引起的
+      // 当 this.addDialogFormVisible = true; 对话框和表单并没有渲染在页面上
+      // 需要渲染的时间，此时获取dom元素，不能获取dom,因为还没有渲染dom
+      // 解决方案：等dom渲染完毕在去获取dom调用函数
+      // 1. 使用原始的方式  setTimeout(fn,0) 等当前函数作用域下所有的代码执行完毕后在执行fn中的代码
+      // setTimeout(() => {
+      //   this.$refs.addForm.resetFields();
+      // }, 0);
+      // 2. 使用 $nextTick(fn) 等待dom渲染完毕
+      // 2.1 含义： 下一帧 去执行fn函数    浏览器一秒渲染60次  60帧
+      this.$nextTick(() => {
+        this.$refs.addForm.resetFields();
       });
     }
   }
