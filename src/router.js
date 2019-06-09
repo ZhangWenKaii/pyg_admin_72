@@ -4,6 +4,7 @@ import Login from "./views/Login.vue";
 import Home from "./views/Home.vue";
 import Welcome from "./views/Welcome.vue";
 import User from "./views/User.vue";
+import Rights from "./views/Rights.vue";
 
 Vue.use(Router);
 
@@ -14,6 +15,10 @@ var router = new Router({
       component: Login
     },
     {
+      path: "/",
+      redirect: "/welcome"
+    },
+    {
       // home本身是第2级别路由，内部需要嵌套设置多个第3级别路由
       path: "/home",
       component: Home, // 不要把component成员给去除了
@@ -21,7 +26,8 @@ var router = new Router({
       children: [
         // {path:'/home', redirect:'/welcome'},
         { path: "/users", component: User },
-        { path: "/welcome", component: Welcome }
+        { path: "/welcome", component: Welcome },
+        { path: "/rights", component: Rights }
       ]
     }
   ]

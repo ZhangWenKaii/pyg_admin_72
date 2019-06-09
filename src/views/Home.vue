@@ -17,6 +17,7 @@
           unique-opened
           :collapse="menushow"
           :collapse-transition="false"
+          :default-active="$route.path"
           router
         >
           <el-submenu
@@ -30,7 +31,7 @@
               <span>{{ item.authName }}</span>
             </template>
             <el-menu-item
-              :index="item2.path"
+              :index="'/' + item2.path"
               v-for="item2 in item.children"
               :key="item2.id"
             >
@@ -55,6 +56,10 @@ export default {
   created() {
     this.getMenuList();
   },
+  // mounted() {
+  //   // 获取当前地址的路径  和菜单的index是一致
+  //   console.log(this.$route);
+  // },
   methods: {
     // 管理员退出系统
     logout() {

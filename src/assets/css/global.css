@@ -19,3 +19,17 @@ i.iconfont {
 .el-menu li i.el-icon-menu {
   margin-right: 10px;
 }
+
+
+.box-card{
+  margin-top: 15px;
+}
+/* 组件的名字  在解析后的HTML代码中是包含一个类这个类就是组件的名称 */
+.el-table{
+  margin-top: 20px;
+}
+.el-pagination{
+  float: right;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
