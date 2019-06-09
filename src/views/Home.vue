@@ -78,7 +78,6 @@ export default {
     async getMenuList() {
       // axios访问服务器获得数据
       var { data: dt } = await this.$http.get("menus");
-      console.log(dt);
       if (dt.meta.status !== 200) {
         return this.$message.error(dt.meta.msg);
       }

@@ -20,12 +20,28 @@
         </el-col>
       </el-row>
       <!-- 卡片 表格-->
-      <el-table :data="tableData" border style="width: 100%">
-        <el-table-column prop="date" label="日期" width="180">
+      <el-table :data="usersList" border style="width: 100%">
+        <el-table-column prop="username" label="用户名"></el-table-column>
+        <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="mobile" label="电话"></el-table-column>
+        <el-table-column prop="role_name" label="角色"></el-table-column>
+        <el-table-column prop="mg_state" label="状态">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.mg_state"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            >
+            </el-switch>
+          </template>
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="180">
+        <el-table-column label="操作" width="200px">
+          <el-button-group>
+            <el-button type="primary" icon="el-icon-edit"></el-button>
+            <el-button type="primary" icon="el-icon-delete"></el-button>
+            <el-button type="primary" icon="el-icon-setting"></el-button>
+          </el-button-group>
         </el-table-column>
-        <el-table-column prop="address" label="地址"> </el-table-column>
       </el-table>
       <!-- 卡片 分页-->
       <el-pagination background layout="prev, pager, next" :total="1000">
@@ -36,31 +52,33 @@
 
 <script>
 export default {
+  created() {
+    this.getData();
+  },
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ]
+      // 获取用户列表的参数
+      reqParams: {
+        query: "",
+        pagenum: 1,
+        pagesize: 5
+      },
+      // 用户列表数据
+      usersList: []
     };
+  },
+  methods: {
+    async getData() {
+      // 获取表格依赖的数据  用户列表数据
+      // 后台返回的数据 res = {data:{data:'数据',meta:{status:200,msg:'提示'}}
+      const {
+        data: { data, meta }
+      } = await this.$http.get("users", { params: this.reqParams });
+      // 错误判断
+      if (meta.status !== 200) return this.$message.error(meta.msg);
+      // 修改data中的表格数据  驱动视图改变
+      this.usersList = data.users;
+    }
   }
 };
 </script>
