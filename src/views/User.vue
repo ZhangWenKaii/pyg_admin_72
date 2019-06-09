@@ -42,11 +42,17 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200px">
-          <el-button-group>
-            <el-button type="primary" icon="el-icon-edit"></el-button>
-            <el-button type="primary" icon="el-icon-delete"></el-button>
-            <el-button type="primary" icon="el-icon-setting"></el-button>
-          </el-button-group>
+          <template slot-scope="scope">
+            <el-button-group>
+              <el-button type="primary" icon="el-icon-edit"></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-delete"
+                @click="delUser(scope.row.id)"
+              ></el-button>
+              <el-button type="primary" icon="el-icon-setting"></el-button>
+            </el-button-group>
+          </template>
         </el-table-column>
       </el-table>
       <!-- 卡片 分页-->
@@ -89,7 +95,6 @@
 </template>
 
 <script>
-import { setTimeout } from "timers";
 export default {
   created() {
     this.getData();
@@ -204,6 +209,33 @@ export default {
       this.$nextTick(() => {
         this.$refs.addForm.resetFields();
       });
+    },
+    delUser(id) {
+      // 确认框
+      this.$confirm("亲，是否删除该用户?", "温馨提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          // 需要用户的ID
+          // 删除请求
+          // 问请求方式有几种8种：
+          // 常用的有五种，这是一种resetful接口定义规范：
+          // get    查询操作
+          // post   添加操作
+          // put    修改操作  整个数据修改
+          // patch  修改操作  部分属性修改
+          // delete 删除操作
+          const {
+            data: { meta }
+          } = await this.$http.delete(`users/${id}`);
+          // 失败情况
+          if (meta.status !== 200) return this.$message.error(meta.msg);
+          // 成功情况
+          this.getData();
+        })
+        .catch(() => null);
     }
   }
 };
