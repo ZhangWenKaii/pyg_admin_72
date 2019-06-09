@@ -48,7 +48,13 @@
         </el-table-column>
       </el-table>
       <!-- 卡片 分页-->
-      <el-pagination background layout="prev, pager, next" :total="1000">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="reqParams.pagenum"
+        :page-count="total"
+        @current-change="pager"
+      >
       </el-pagination>
     </el-card>
   </div>
@@ -65,10 +71,12 @@ export default {
       reqParams: {
         query: "",
         pagenum: 1,
-        pagesize: 5
+        pagesize: 2
       },
       // 用户列表数据
-      usersList: []
+      usersList: [],
+      // 分页相关数据
+      total: 0
     };
   },
   methods: {
@@ -82,10 +90,18 @@ export default {
       if (meta.status !== 200) return this.$message.error(meta.msg);
       // 修改data中的表格数据  驱动视图改变
       this.usersList = data.users;
+      // data.total 是总条数
+      this.total = Math.ceil(data.total / this.reqParams.pagesize);
     },
     search() {
       // 获取输入框的内容  需要携带
       // 使用v-model绑定 reqParmas.query数据  当输入的内容修改的时候reqParmas.query也修改
+      this.getData();
+    },
+    pager(newPagenum) {
+      // 更新请求的参数 reqParams.pagenum 为 newPagenum
+      this.reqParams.pagenum = newPagenum;
+      // 获取数据
       this.getData();
     }
   }
