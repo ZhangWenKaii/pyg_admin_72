@@ -35,6 +35,7 @@
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.mg_state"
+              @change="toggleState(scope.row)"
               active-color="#13ce66"
               inactive-color="#ff4949"
             >
@@ -50,7 +51,11 @@
                 icon="el-icon-delete"
                 @click="delUser(scope.row.id)"
               ></el-button>
-              <el-button type="primary" icon="el-icon-setting"></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-setting"
+                @click="openChangeRole(scope.row)"
+              ></el-button>
             </el-button-group>
           </template>
         </el-table-column>
@@ -65,7 +70,7 @@
       >
       </el-pagination>
     </el-card>
-    <el-dialog title="收货地址" :visible.sync="addDialogFormVisible">
+    <el-dialog title="添加用户" :visible.sync="addDialogFormVisible">
       <el-form
         :model="addForm"
         autocomplete="off"
@@ -89,6 +94,27 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="addDialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addUser()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="分配角色" :visible.sync="roleDialogFormVisible">
+      <el-form autocomplete="off" label-width="100px">
+        <el-form-item label="当前用户："> {{ roleUserName }} </el-form-item>
+        <el-form-item label="当前角色："> {{ roleName }} </el-form-item>
+        <el-form-item label="分配角色：">
+          <el-select v-model="roleSelected" placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="roleDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="changeRole()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -142,7 +168,13 @@ export default {
           // 校验函数写在哪里？ 在 return 之前定义  因为addRules需要使用
           { validator: checkMobile, trigger: "blur" }
         ]
-      }
+      },
+      // 分配角色相关数据
+      roleDialogFormVisible: false,
+      roleUserName: "",
+      roleName: "",
+      roleList: [],
+      roleSelected: ""
     };
   },
   methods: {
@@ -236,6 +268,31 @@ export default {
           this.getData();
         })
         .catch(() => null);
+    },
+    async toggleState(row) {
+      // scope.row {id,mg_state} 最新的状态  row.mg_state
+      // 获取当前行的ID
+      // 当你去切换的时候  修改当前组件的值  值是双向数据绑定  mg_state 也已经修改
+      const {
+        data: { meta }
+      } = await this.$http.put(`users/${row.id}/state/${row.mg_state}`);
+      if (meta.status !== 200) return this.$message.error("切换状态失败");
+      // this.getData();
+      this.$message.success("切换状态成功");
+    },
+    async openChangeRole(row) {
+      // 获取 当前行数据
+      // 获取 当角色列表数据
+      const {
+        data: { data, meta }
+      } = await this.$http.get("roles");
+      if (meta.status !== 200) return this.$message.error("获取角色列表失败");
+      // 两项数据准备完毕  渲染
+      this.roleUserName = row.username;
+      this.roleName = row.role_name;
+      this.roleList = data;
+      // 显示对话框
+      this.roleDialogFormVisible = true;
     }
   }
 };
