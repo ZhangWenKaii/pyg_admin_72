@@ -20,7 +20,9 @@
           </el-input>
         </el-col>
         <el-col :span="18">
-          <el-button type="primary">添加用户</el-button>
+          <el-button type="primary" @click="addDialogFormVisible = true"
+            >添加用户</el-button
+          >
         </el-col>
       </el-row>
       <!-- 卡片 表格-->
@@ -57,6 +59,28 @@
       >
       </el-pagination>
     </el-card>
+    <el-dialog title="收货地址" :visible.sync="addDialogFormVisible">
+      <el-form :model="addForm" autocomplete="off" label-width="80px">
+        <el-form-item label="用户名">
+          <el-input v-model="addForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="addForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input v-model="addForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="addForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDialogFormVisible = false"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -76,7 +100,10 @@ export default {
       // 用户列表数据
       usersList: [],
       // 分页相关数据
-      total: 0
+      total: 0,
+      // 添加用户对话框相关数据
+      addDialogFormVisible: false,
+      addForm: {}
     };
   },
   methods: {
@@ -94,6 +121,7 @@ export default {
       this.total = Math.ceil(data.total / this.reqParams.pagesize);
     },
     search() {
+      this.reqParams.pagenum = 1;
       // 获取输入框的内容  需要携带
       // 使用v-model绑定 reqParmas.query数据  当输入的内容修改的时候reqParmas.query也修改
       this.getData();
