@@ -60,25 +60,29 @@
       </el-pagination>
     </el-card>
     <el-dialog title="收货地址" :visible.sync="addDialogFormVisible">
-      <el-form :model="addForm" autocomplete="off" label-width="80px">
-        <el-form-item label="用户名">
+      <el-form
+        :model="addForm"
+        autocomplete="off"
+        :rules="addRules"
+        label-width="80px"
+        ref="addForm"
+      >
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="addForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱">
+        <el-form-item label="邮箱" prop="email">
           <el-input v-model="addForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="手机号">
+        <el-form-item label="手机号" prop="mobile">
           <el-input v-model="addForm.mobile"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addDialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogFormVisible = false"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="addUser()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -90,6 +94,17 @@ export default {
     this.getData();
   },
   data() {
+    // 自定义校验规则函数
+    const checkMobile = (rule, value, callback) => {
+      // rule 规则对象  value 当前表单元素的值  callback 校验完毕后的回调函数
+      // 成功 callback()  失败 callback(new Errror('错误信息'))  将来会显示在你的元素下
+      // 定义自己的校验规则
+      // 校验组件去调用这个函数  定义的规则符合校验组件的要求
+      if (!/^1[356789]\d{9}$/.test(value)) {
+        return callback(new Error("手机号格式不正确"));
+      }
+      callback();
+    };
     return {
       // 获取用户列表的参数
       reqParams: {
@@ -103,7 +118,25 @@ export default {
       total: 0,
       // 添加用户对话框相关数据
       addDialogFormVisible: false,
-      addForm: {}
+      addForm: {},
+      addRules: {
+        username: [{ required: true, trigger: "blur", message: "用户名必填" }],
+        password: [
+          { required: true, trigger: "blur", message: "密码必填" },
+          { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "blur" }
+        ],
+        email: [
+          { required: true, trigger: "blur", message: "邮箱必填" },
+          { type: "email", trigger: "blur", message: "邮箱格式不正确" }
+        ],
+        mobile: [
+          { required: true, trigger: "blur", message: "手机号必填" },
+          // 没有符合国情的校验规则  使用自定义校验规则
+          // { validator: 检验函数名称, trigger: 'blur' }
+          // 校验函数写在哪里？ 在 return 之前定义  因为addRules需要使用
+          { validator: checkMobile, trigger: "blur" }
+        ]
+      }
     };
   },
   methods: {
@@ -121,6 +154,7 @@ export default {
       this.total = Math.ceil(data.total / this.reqParams.pagesize);
     },
     search() {
+      // 每次搜索显示第一页
       this.reqParams.pagenum = 1;
       // 获取输入框的内容  需要携带
       // 使用v-model绑定 reqParmas.query数据  当输入的内容修改的时候reqParmas.query也修改
@@ -131,6 +165,25 @@ export default {
       this.reqParams.pagenum = newPagenum;
       // 获取数据
       this.getData();
+    },
+    addUser() {
+      //添加用户
+      // 调用  表单组件的函数  函数是挂载在dom元素上的
+      this.$refs.addForm.validate(async valid => {
+        if (valid) {
+          // 进行数据的提交了
+          const {
+            data: { meta }
+          } = await this.$http.post("users", this.addForm);
+          // 失败
+          if (meta.status !== 201) return this.$message.error(meta.msg);
+          // 成功
+          this.addDialogFormVisible = false;
+          // 最好跳转到第一页
+          this.reqParams.pagenum = 1;
+          this.getData();
+        }
+      });
     }
   }
 };
