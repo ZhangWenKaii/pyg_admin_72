@@ -48,7 +48,7 @@
               <el-button
                 type="primary"
                 icon="el-icon-edit"
-                @click="openEditDialog()"
+                @click="openEditDialog(scope.row)"
               ></el-button>
               <el-button
                 type="primary"

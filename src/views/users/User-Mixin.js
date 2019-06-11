@@ -80,11 +80,38 @@ export default {
   },
   methods: {
     // 打开编辑对话框
-    openEditDialog() {
+    openEditDialog(row) {
       this.editDialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs.editForm.resetFields();
+        // 填充表单
+        // 1. 获取数据 row
+        // 2. 修改editForm
+        this.editForm.id = row.id;
+        this.editForm.username = row.username;
+        this.editForm.email = row.email;
+        this.editForm.mobile = row.mobile;
+      });
     },
     // 编辑用户
-    editUser() {},
+    editUser() {
+      // 对整个表单进行校验
+      this.$refs.editForm.validate(async valid => {
+        if (valid) {
+          // 进行一步操作  修改用户
+          const {
+            data: { meta }
+          } = await this.$http.put(`users/${this.editForm.id}`, {
+            email: this.editForm.email,
+            mobile: this.editForm.mobile
+          });
+          if (meta.status !== 200) return this.$message.error("编辑用户失败");
+          // 成功  更新列表  关闭对话框
+          this.getData();
+          this.editDialogFormVisible = false;
+        }
+      });
+    },
     async getData() {
       // 获取表格依赖的数据  用户列表数据
       // 后台返回的数据 res = {data:{data:'数据',meta:{status:200,msg:'提示'}}
