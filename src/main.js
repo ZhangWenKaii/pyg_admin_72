@@ -14,6 +14,9 @@ Vue.use(ElementUI);
 import axios from "./http";
 Vue.prototype.$http = axios;
 
+import MyBread from "./components/MyBread";
+Vue.component("my-bread", MyBread);
+
 Vue.config.productionTip = false;
 
 new Vue({
