@@ -150,7 +150,12 @@ export default {
       total: 0,
       // 添加用户对话框相关数据
       addDialogFormVisible: false,
-      addForm: {},
+      addForm: {
+        username: "",
+        password: "",
+        email: "",
+        mobile: ""
+      },
       addRules: {
         username: [{ required: true, trigger: "blur", message: "用户名必填" }],
         password: [
@@ -172,6 +177,7 @@ export default {
       // 分配角色相关数据
       roleDialogFormVisible: false,
       roleUserName: "",
+      roleUserId: null,
       roleName: "",
       roleList: [],
       roleSelected: ""
@@ -289,10 +295,28 @@ export default {
       if (meta.status !== 200) return this.$message.error("获取角色列表失败");
       // 两项数据准备完毕  渲染
       this.roleUserName = row.username;
+      // 目的：给将来分配角色使用
+      this.roleUserId = row.id;
       this.roleName = row.role_name;
       this.roleList = data;
       // 显示对话框
       this.roleDialogFormVisible = true;
+    },
+    async changeRole() {
+      // 点击确认按钮  修改当前用户的角色
+      // 1. 明确修改角色需要哪些数据  用户ID  角色ID
+      // 2. 准备数据 用户ID 在打开对话框的时候 roleUserId 赋值
+      // 3. 准备数据 角色ID v-model="roleSelected"  就是选中的角色ID
+      const {
+        data: { meta }
+      } = await this.$http.put(`users/${this.roleUserId}/role`, {
+        rid: this.roleSelected
+      });
+      // 4. 失败
+      if (meta.status !== 200) return this.$message.error("分配角色失败");
+      // 5. 成功
+      this.getData();
+      this.roleDialogFormVisible = false;
     }
   }
 };
