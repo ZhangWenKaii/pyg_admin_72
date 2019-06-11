@@ -14,6 +14,7 @@ Vue.use(ElementUI);
 import axios from "./http";
 Vue.prototype.$http = axios;
 
+//注册组件
 import MyBread from "./components/MyBread";
 Vue.component("my-bread", MyBread);
 
