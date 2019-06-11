@@ -4,7 +4,7 @@ import Login from "./views/Login.vue";
 import Home from "./views/Home.vue";
 import Welcome from "./views/Welcome.vue";
 import User from "./views/users/User.vue";
-import Rights from "./views/Rights.vue";
+import Rights from "./views/auth/Rights.vue";
 
 Vue.use(Router);
 
