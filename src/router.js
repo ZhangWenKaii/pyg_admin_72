@@ -6,6 +6,7 @@ import Welcome from "./views/Welcome.vue";
 import User from "./views/users/User.vue";
 import Rights from "./views/auth/Rights.vue";
 import Roles from "./views/auth/Roles.vue";
+import Categories from "./views/goods/Categories.vue";
 
 Vue.use(Router);
 
@@ -29,7 +30,8 @@ var router = new Router({
         { path: "/users", component: User },
         { path: "/welcome", component: Welcome },
         { path: "/rights", component: Rights },
-        { path: "/roles", component: Roles }
+        { path: "/roles", component: Roles },
+        { path: "/categories", component: Categories }
       ]
     }
   ]
