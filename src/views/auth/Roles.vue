@@ -136,6 +136,7 @@
         :default-expand-all="true"
         :default-checked-keys="checkedIdArr"
         :props="defaultProps"
+        ref="tree"
       >
       </el-tree>
       <div slot="footer" class="dialog-footer">

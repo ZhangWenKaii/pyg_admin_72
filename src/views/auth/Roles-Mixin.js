@@ -27,7 +27,8 @@ export default {
         children: "children",
         label: "authName"
       },
-      checkedIdArr: []
+      checkedIdArr: [],
+      rightsRoleId: null
     };
   },
   created() {
@@ -55,11 +56,30 @@ export default {
         });
       });
       this.checkedIdArr = arr;
+      this.rightsRoleId = row.id;
       // 再打开对话框
       this.rightDialogFormVisible = true;
     },
     // 提交分配权限
-    disRights() {},
+    async disRights() {
+      // 1.获取全选的权限的ID方式
+      const checkedArr = this.$refs.tree.getCheckedKeys();
+      // 2. 获取半选的权限的ID方式
+      const halfCheckedArr = this.$refs.tree.getHalfCheckedKeys();
+      // 3. 合并
+      const arr = [...checkedArr, ...halfCheckedArr];
+      // 4. 角色ID this.rightsRoleId
+      const {
+        data: { meta }
+      } = await this.$http.post(`roles/${this.rightsRoleId}/rights`, {
+        rids: arr.join(",")
+      });
+      if (meta.status !== 200) return this.$message.error("角色权限分配失败");
+      // 5. 成功
+      this.rightDialogFormVisible = false;
+      this.getData();
+      this.$message.success("角色权限分配成功");
+    },
     // 删除单个权限
     delRights(row, rightId) {
       console.log(row);
