@@ -19,6 +19,62 @@ export default {
       editForm: {
         roleName: "",
         roleDesc: ""
+      },
+      // 分配权限相关数据
+      rightDialogFormVisible: false,
+      rightsTreeData: [
+        {
+          id: 1,
+          label: "一级 1",
+          children: [
+            {
+              id: 4,
+              label: "二级 1-1",
+              children: [
+                {
+                  id: 9,
+                  label: "三级 1-1-1"
+                },
+                {
+                  id: 10,
+                  label: "三级 1-1-2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: "一级 2",
+          children: [
+            {
+              id: 5,
+              label: "二级 2-1"
+            },
+            {
+              id: 6,
+              label: "二级 2-2"
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: "一级 3",
+          children: [
+            {
+              id: 7,
+              label: "二级 3-1"
+            },
+            {
+              id: 8,
+              label: "二级 3-2"
+            }
+          ]
+        }
+      ],
+      defaultProps: {
+        children: "children",
+        label: "label"
       }
     };
   },
@@ -26,6 +82,12 @@ export default {
     this.getData();
   },
   methods: {
+    // 打开分配权限对话框
+    openRightsDialog() {
+      this.rightDialogFormVisible = true;
+    },
+    // 提交分配权限
+    disRights() {},
     // 删除单个权限
     delRights(row, rightId) {
       console.log(row);

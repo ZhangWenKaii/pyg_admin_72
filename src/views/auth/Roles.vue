@@ -75,7 +75,11 @@
                 @click="delRole(scope.row.id)"
                 type="primary"
               ></el-button>
-              <el-button icon="el-icon-setting" type="primary"></el-button>
+              <el-button
+                @click="openRightsDialog(scope.row)"
+                icon="el-icon-setting"
+                type="primary"
+              ></el-button>
             </el-button-group>
           </template>
         </el-table-column>
@@ -121,6 +125,22 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="editDialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="editRole()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 分配权限对话框 -->
+    <el-dialog title="分配权限" :visible.sync="rightDialogFormVisible">
+      <el-tree
+        :data="rightsTreeData"
+        show-checkbox
+        node-key="id"
+        :default-expand-all="true"
+        :default-checked-keys="[5]"
+        :props="defaultProps"
+      >
+      </el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="rightDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="disRights()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
