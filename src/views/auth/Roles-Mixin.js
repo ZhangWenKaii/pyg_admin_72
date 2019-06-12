@@ -26,6 +26,33 @@ export default {
     this.getData();
   },
   methods: {
+    // 删除单个权限
+    delRights(row, rightId) {
+      console.log(row);
+      this.$confirm("亲，是否删除该权限?", "温馨提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          // 进行删除 准备 角色ID roleId 权限ID rightId
+          // 需要 data （修改后的权限数据） 去局部的更新展开项
+          // 当前获取的所有的角色列表信息是 rolesList
+          // 去修改 rolesList 中的当前一项角色的数据  scope.row
+          // scope.row.children 就是权限数据
+          // 结论：scope.row.children = data 即可
+          const {
+            data: { data, meta }
+          } = await this.$http.delete(`roles/${row.id}/rights/${rightId}`);
+          if (meta.status !== 200)
+            return this.$message.error("角色权限删除失败");
+          // 通过当前实例中的数据是获取不到当前行数据的
+          // 在 template 是可以获取row 数据
+          // delRights 就是在  template 调用的
+          row.children = data;
+        })
+        .catch(() => null);
+    },
     // 打开编辑角色对话框
     openEditDialog(row) {
       this.editDialogFormVisible = true;

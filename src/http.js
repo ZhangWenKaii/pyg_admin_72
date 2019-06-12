@@ -1,4 +1,4 @@
-// 导出一个已经配置好的 axios
+// 导出一个已经配置好的axios
 // 引入axios并配置
 import axios from "axios";
 

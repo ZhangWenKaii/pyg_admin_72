@@ -21,7 +21,9 @@
                 v-for="(item, index) in scope.row.children"
               >
                 <el-col :span="4">
-                  <el-tag closable>{{ item.authName }} </el-tag>
+                  <el-tag closable @close="delRights(scope.row, item.id)"
+                    >{{ item.authName }}
+                  </el-tag>
                   <i class="el-icon-caret-right"></i>
                 </el-col>
                 <el-col :span="20">
@@ -33,7 +35,10 @@
                     }"
                   >
                     <el-col :span="6">
-                      <el-tag closable type="success"
+                      <el-tag
+                        closable
+                        type="success"
+                        @close="delRights(scope.row, subItem.id)"
                         >{{ subItem.authName }}
                       </el-tag>
                       <i class="el-icon-caret-right"></i>
@@ -43,6 +48,7 @@
                         :key="lastItem.id"
                         v-for="lastItem in subItem.children"
                         closable
+                        @close="delRights(scope.row, lastItem.id)"
                         type="warning"
                         >{{ lastItem.authName }}
                       </el-tag>
