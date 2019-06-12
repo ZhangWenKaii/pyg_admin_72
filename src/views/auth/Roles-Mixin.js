@@ -22,59 +22,10 @@ export default {
       },
       // 分配权限相关数据
       rightDialogFormVisible: false,
-      rightsTreeData: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
-      ],
+      rightsTreeData: [],
       defaultProps: {
         children: "children",
-        label: "label"
+        label: "authName"
       }
     };
   },
@@ -83,7 +34,15 @@ export default {
   },
   methods: {
     // 打开分配权限对话框
-    openRightsDialog() {
+    async openRightsDialog() {
+      // 先获取数据 使用await阻止程序的运行
+      const {
+        data: { data, meta }
+      } = await this.$http.get("rights/tree");
+      if (meta.status !== 200)
+        return this.$message.error("获取所有权限数据失败");
+      this.rightsTreeData = data;
+      // 再打开对话框
       this.rightDialogFormVisible = true;
     },
     // 提交分配权限
