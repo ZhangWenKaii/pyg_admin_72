@@ -26,7 +26,8 @@ export default {
       defaultProps: {
         children: "children",
         label: "authName"
-      }
+      },
+      checkedIdArr: []
     };
   },
   created() {
@@ -34,7 +35,7 @@ export default {
   },
   methods: {
     // 打开分配权限对话框
-    async openRightsDialog() {
+    async openRightsDialog(row) {
       // 先获取数据 使用await阻止程序的运行
       const {
         data: { data, meta }
@@ -42,6 +43,18 @@ export default {
       if (meta.status !== 200)
         return this.$message.error("获取所有权限数据失败");
       this.rightsTreeData = data;
+      // 选中已有的权限的复选框
+      let arr = [];
+      // 只需要第三级的权限ID
+      row.children.forEach(item => {
+        item.children.forEach(subItem => {
+          subItem.children.forEach(lastItem => {
+            // 添加ID给arr数组
+            arr.push(lastItem.id);
+          });
+        });
+      });
+      this.checkedIdArr = arr;
       // 再打开对话框
       this.rightDialogFormVisible = true;
     },

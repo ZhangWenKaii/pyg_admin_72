@@ -134,7 +134,7 @@
         show-checkbox
         node-key="id"
         :default-expand-all="true"
-        :default-checked-keys="[5]"
+        :default-checked-keys="checkedIdArr"
         :props="defaultProps"
       >
       </el-tree>
