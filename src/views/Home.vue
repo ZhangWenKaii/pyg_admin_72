@@ -7,7 +7,7 @@
       </div>
       <el-button type="info" @click="logout()">退出</el-button>
     </el-header>
-    <el-container>
+    <el-container :style="{ height: 'calc(100% - 60px)' }">
       <el-aside :width="menushow ? '65px' : '200px'">
         <div id="toggle_bar" @click="menushow = !menushow">|||</div>
         <el-menu

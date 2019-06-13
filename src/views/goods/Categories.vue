@@ -33,8 +33,16 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button icon="el-icon-edit" circle></el-button>
-            <el-button icon="el-icon-delete" circle></el-button>
+            <el-button
+              icon="el-icon-edit"
+              @click="openEditDialog(scope.row)"
+              circle
+            ></el-button>
+            <el-button
+              @click="delCate(scope.row.cat_id)"
+              icon="el-icon-delete"
+              circle
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -51,7 +59,7 @@
     <!-- 添加分类对话框 -->
     <el-dialog title="添加分类" :visible.sync="addDialogFormVisible">
       <el-form
-        :rules="addRules"
+        :rules="rules"
         :model="addForm"
         label-width="80px"
         autocomplete="off"
@@ -61,10 +69,12 @@
           <el-cascader
             v-model="selectedCateArr"
             :options="cascaderOptions"
+            clearable
             :props="{
               expandTrigger: 'hover',
               value: 'cat_id',
-              label: 'cat_name'
+              label: 'cat_name',
+              checkStrictly: true
             }"
             @change="handleChange"
           ></el-cascader>
@@ -78,9 +88,26 @@
         <el-button type="primary" @click="addCate()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 编辑分类对话框 -->
+    <el-dialog title="编辑分类" :visible.sync="editDialogFormVisible">
+      <el-form
+        :rules="rules"
+        :model="editForm"
+        label-width="80px"
+        autocomplete="off"
+        ref="editForm"
+      >
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="editForm.cat_name"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editCate()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
-
 <script>
 import mixin from "./Categories-Mixin";
 export default {
