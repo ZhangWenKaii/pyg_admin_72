@@ -22,10 +22,85 @@
       </el-form>
       <!-- tab切换组件  标签页组件 -->
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="动态参数" name="many">用户管理</el-tab-pane>
-        <el-tab-pane label="静态参数" name="only">配置管理</el-tab-pane>
+        <el-tab-pane label="动态参数" name="many">
+          <el-button
+            type="success"
+            @click="openAddDialog()"
+            :disabled="disabled"
+            >添加动态参数</el-button
+          >
+          <el-table :data="manyAttrs">
+            <el-table-column type="expand"></el-table-column>
+            <el-table-column
+              label="属性名称"
+              prop="attr_name"
+            ></el-table-column>
+            <el-table-column width="200" label="操作">
+              <template slot-scope="scope">
+                <el-button circle icon="el-icon-edit"></el-button>
+                <el-button
+                  circle
+                  icon="el-icon-delete"
+                  @click="delParams(scope.row.attr_id)"
+                ></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="静态参数" name="only">
+          <el-button
+            type="success"
+            @click="openAddDialog()"
+            :disabled="disabled"
+            >添加静态参数</el-button
+          >
+          <el-table :data="onlyAttrs">
+            <el-table-column type="index"></el-table-column>
+            <el-table-column
+              label="属性名称"
+              prop="attr_name"
+            ></el-table-column>
+            <el-table-column label="属性值">
+              <template slot-scope="scope">
+                <el-tag :style="{ width: '200px' }">{{
+                  scope.row.attr_vals
+                }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column width="200" label="操作">
+              <template slot-scope="scope">
+                <el-button circle icon="el-icon-edit"></el-button>
+                <el-button
+                  circle
+                  @click="delParams(scope.row.attr_id)"
+                  icon="el-icon-delete"
+                ></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
+    <el-dialog
+      :title="activeName === 'many' ? '添加动态参数' : '添加静态参数'"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        ref="form"
+        :rules="rules"
+        label-width="80px"
+        autocomplete="off"
+        :model="form"
+      >
+        <el-form-item label="参数名称" prop="attr_name">
+          <el-input v-model="form.attr_name"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addParams()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
